@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./App.css";
+import SearchBar from "./components/SearchBar";
+import PerDayTemperatureTabs from "./components/PerDayTemperatureTabs";
+import ForeCastChart from "./components/ForeCastChart";
 
 function App() {
+  const [ip, setIp] = useState(null);
+  const [temperature, setTemperature] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://ip-api.com/json").then((res) => {
+      const response = res.data;
+      setIp(response);
+    });
+  }, []);
+  useEffect(() => {
+    console.log(ip);
+    if (ip) {
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${ip.lat}&lon=${ip.lon}&units=metric&exclude=minutely&appid=897cfb18331a69e1c93cf7e1507dbe5a`
+        )
+        .then((res) => {
+          console.log(res.data);
+          const response = res.data;
+          setTemperature(response);
+        });
+    }
+  }, [ip]);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchBar />
+      <PerDayTemperatureTabs ip={ip} />
+      <ForeCastChart />
     </div>
   );
 }
