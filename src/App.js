@@ -32,8 +32,8 @@ function App() {
   return (
     <div className="App">
       <SearchBar />
-      <PerDayTemperatureTabs ip={ip} />
-      <ForeCastChart />
+      <PerDayTemperatureTabs temperature={temperature} />
+      <ForeCastChart temperature={temperature} />
     </div>
   );
 }
